@@ -1,0 +1,3639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Search Tree Visualizer | Algorithm Visualizer Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --purple: #a855f7;
+            --pink: #ec4899;
+            --cyan: #06b6d4;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --background: #f9fafb;
+            --white: #ffffff;
+            --border: #e5e7eb;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.15);
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --gradient-info: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --gradient-purple: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+            --gradient-pink: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+            --gradient-cyan: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            --gradient-queue: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            
+            --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --transition-elastic: all 0.8s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e7ec 100%);
+            min-height: 100vh;
+            color: var(--text);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        ::selection {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            animation: float 25s infinite ease-in-out;
+            filter: blur(40px);
+            opacity: 0.7;
+        }
+
+        .bg-circle:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            top: -150px;
+            left: -150px;
+            animation-delay: 0s;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15));
+        }
+
+        .bg-circle:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            top: 50%;
+            right: -100px;
+            animation-delay: 5s;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(168, 85, 247, 0.1));
+        }
+
+        .bg-circle:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            bottom: -80px;
+            left: 30%;
+            animation-delay: 10s;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(59, 130, 246, 0.12));
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translate(0, 0) rotate(0deg) scale(1); 
+                opacity: 0.7;
+            }
+            25% { 
+                transform: translate(30px, -40px) rotate(90deg) scale(1.05); 
+                opacity: 0.9;
+            }
+            50% { 
+                transform: translate(-20px, 30px) rotate(180deg) scale(0.95); 
+                opacity: 0.8;
+            }
+            75% { 
+                transform: translate(-40px, -20px) rotate(270deg) scale(1.02); 
+                opacity: 0.85;
+            }
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: particleFloat 20s infinite linear;
+            opacity: 0.3;
+        }
+
+        .particle:nth-child(3n) {
+            background: var(--secondary);
+            animation-delay: -5s;
+            animation-duration: 25s;
+        }
+
+        .particle:nth-child(3n+1) {
+            background: var(--purple);
+            animation-delay: -10s;
+            animation-duration: 30s;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .navbar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+            animation: slideDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            animation: pulseGlow 3s infinite alternate;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes pulseGlow {
+            0% {
+                box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3),
+                            0 0 0 0 rgba(99, 102, 241, 0.4);
+                transform: scale(1) rotate(0deg);
+            }
+            50% {
+                box-shadow: 0 4px 30px rgba(99, 102, 241, 0.5),
+                            0 0 20px 10px rgba(99, 102, 241, 0.2);
+            }
+            100% {
+                box-shadow: 0 4px 40px rgba(99, 102, 241, 0.6),
+                            0 0 0 0 rgba(99, 102, 241, 0);
+                transform: scale(1.05) rotate(5deg);
+            }
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: logoShine 4s infinite linear;
+        }
+
+        @keyframes logoShine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .logo-text span {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-sm);
+            animation: avatarFloat 3s infinite alternate ease-in-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes avatarFloat {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+                box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+            }
+            50% {
+                transform: translateY(-10px) scale(1.05);
+                box-shadow: 
+                    0 10px 25px rgba(99, 102, 241, 0.5),
+                    0 0 20px rgba(99, 102, 241, 0.2);
+            }
+        }
+
+        .user-avatar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.3),
+                transparent
+            );
+            transform: translateX(-100%);
+            animation: avatarShine 3s infinite;
+        }
+
+        @keyframes avatarShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .user-avatar img {
+            width: 70px;
+            border-radius: 60px;
+            height: 63px;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .user-email {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .back-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition-bounce);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .back-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .back-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .logout-btn {
+            background: var(--gradient-danger);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition-bounce);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .logout-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+            animation: pageEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes pageEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            animation: heroEntrance 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes heroEntrance {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--primary),
+                var(--secondary),
+                var(--purple),
+                transparent
+            );
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% auto;
+            animation: gradientShift 3s ease-in-out infinite alternate, 
+                       titleEntrance 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes titleEntrance {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.9);
+                letter-spacing: -2px;
+            }
+            50% {
+                letter-spacing: 2px;
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                letter-spacing: normal;
+            }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% center; }
+            100% { background-position: 100% center; }
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .functionality-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .func-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text);
+            transition: var(--transition-elastic);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .func-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .func-btn:hover::before {
+            left: 100%;
+        }
+
+        .func-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .func-btn:hover::after {
+            width: 200px;
+            height: 200px;
+        }
+
+        .func-btn.active {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .func-btn:hover:not(.active) {
+            transform: translateY(-5px) scale(1.05);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .controls-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-md);
+            animation: controlsEntrance 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes controlsEntrance {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .control-label {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-input {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition-smooth);
+            background: var(--glass-bg);
+        }
+
+        .control-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .control-select {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+            background: var(--glass-bg);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .control-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .control-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition-bounce);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .control-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .control-btn:hover::before {
+            left: 100%;
+        }
+
+        .control-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .control-btn:hover::after {
+            width: 200px;
+            height: 200px;
+        }
+
+        .btn-success {
+            background: var(--gradient-success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--gradient-danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--gradient-warning);
+            color: white;
+        }
+
+        .btn-info {
+            background: var(--gradient-info);
+            color: white;
+        }
+
+        .btn-purple {
+            background: var(--gradient-purple);
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Main content area - Tree and Info together */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            align-items: start;
+        }
+
+        /* Tree Container - Fixed width and height */
+        .tree-container-wrapper {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            position: relative;
+            height: 600px;
+            animation: treeEntrance 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes treeEntrance {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .tree-container-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--primary),
+                var(--secondary),
+                var(--purple),
+                transparent
+            );
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+        }
+
+        .tree-scroll-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 100;
+            display: flex;
+            gap: 5px;
+        }
+
+        .scroll-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .scroll-btn:hover {
+            background: var(--gradient-primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .tree-container {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            position: relative;
+        }
+
+        .tree-visualization {
+            position: relative;
+            min-width: 800px;
+            min-height: 500px;
+            padding: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .tree-node {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-smooth);
+            z-index: 10;
+            cursor: pointer;
+            animation: nodeAppear 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes nodeAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(-180deg);
+                box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+            }
+            50% {
+                transform: scale(1.2) rotate(-90deg);
+                box-shadow: 0 0 30px 15px rgba(99, 102, 241, 0.3);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0);
+                box-shadow: 0 0 20px 5px rgba(99, 102, 241, 0.2);
+            }
+        }
+
+        .tree-node-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .tree-node-index {
+            position: absolute;
+            top: -20px;
+            font-size: 0.65rem;
+            color: var(--text-light);
+            background: var(--glass-bg);
+            padding: 2px 6px;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition-smooth);
+        }
+
+        .tree-node:hover .tree-node-index {
+            transform: translateY(-5px);
+            color: var(--primary);
+        }
+
+        .tree-edge {
+            position: absolute;
+            background: linear-gradient(90deg, var(--primary-light), var(--primary));
+            height: 3px;
+            transform-origin: 0 0;
+            z-index: 1;
+            transition: var(--transition-smooth);
+            border-radius: 2px;
+        }
+
+        .tree-edge.highlight {
+            background: var(--gradient-warning);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+            animation: edgePulse 1s infinite alternate;
+            z-index: 5;
+        }
+
+        @keyframes edgePulse {
+            0% { 
+                transform: scaleX(1);
+                box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+            }
+            100% { 
+                transform: scaleX(1.05);
+                box-shadow: 0 0 20px rgba(245, 158, 11, 0.8);
+            }
+        }
+
+        /* Node States */
+        .tree-node.highlight {
+            background: var(--gradient-warning);
+            transform: scale(1.3);
+            box-shadow: 
+                0 0 30px rgba(245, 158, 11, 0.8),
+                0 0 0 5px rgba(255, 255, 255, 0.2);
+            animation: nodePulse 1.5s infinite alternate;
+            z-index: 20;
+            border-color: rgba(245, 158, 11, 0.5);
+        }
+
+        @keyframes nodePulse {
+            0% {
+                box-shadow: 
+                    0 0 20px rgba(245, 158, 11, 0.6),
+                    0 0 0 3px rgba(255, 255, 255, 0.2);
+                transform: scale(1.2);
+            }
+            100% {
+                box-shadow: 
+                    0 0 40px rgba(245, 158, 11, 1),
+                    0 0 0 5px rgba(255, 255, 255, 0.3);
+                transform: scale(1.4);
+            }
+        }
+
+        .tree-node.inserting {
+            animation: nodeInsert 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--gradient-success);
+            box-shadow: 
+                0 0 30px rgba(16, 185, 129, 0.8),
+                0 0 0 5px rgba(255, 255, 255, 0.2);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        @keyframes nodeInsert {
+            0% {
+                opacity: 0;
+                transform: scale(0) translateY(-100px) rotate(-180deg);
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.3) translateY(20px) rotate(-90deg);
+                box-shadow: 0 0 50px 20px rgba(16, 185, 129, 0.5);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0) rotate(0);
+                box-shadow: 
+                    0 0 30px rgba(16, 185, 129, 0.8),
+                    0 0 0 5px rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        .tree-node.deleting {
+            animation: nodeDelete 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            background: var(--gradient-danger);
+            box-shadow: 
+                0 0 30px rgba(239, 68, 68, 0.8),
+                0 0 0 5px rgba(255, 255, 255, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+            z-index: 30;
+        }
+
+        @keyframes nodeDelete {
+            0% {
+                opacity: 1;
+                transform: scale(1) rotate(0);
+                box-shadow: 
+                    0 0 30px rgba(239, 68, 68, 0.8),
+                    0 0 0 5px rgba(255, 255, 255, 0.2);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.4) rotate(180deg);
+                box-shadow: 0 0 60px 30px rgba(239, 68, 68, 0.6);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0) rotate(360deg);
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
+        .tree-node.found {
+            background: var(--gradient-purple);
+            transform: scale(1.4);
+            box-shadow: 
+                0 0 40px rgba(168, 85, 247, 0.9),
+                0 0 0 5px rgba(255, 255, 255, 0.3);
+            animation: nodeFound 0.8s ease-in-out 3;
+            z-index: 25;
+            border-color: rgba(168, 85, 247, 0.5);
+        }
+
+        @keyframes nodeFound {
+            0%, 100% { 
+                transform: scale(1.4) rotate(0);
+                box-shadow: 
+                    0 0 30px rgba(168, 85, 247, 0.8),
+                    0 0 0 5px rgba(255, 255, 255, 0.2);
+            }
+            50% { 
+                transform: scale(1.6) rotate(10deg);
+                box-shadow: 
+                    0 0 50px rgba(168, 85, 247, 1),
+                    0 0 0 8px rgba(255, 255, 255, 0.4);
+            }
+        }
+
+        .tree-node.traversing {
+            background: var(--gradient-info);
+            animation: traversingNode 1.2s infinite alternate;
+            box-shadow: 
+                0 0 25px rgba(59, 130, 246, 0.7),
+                0 0 0 4px rgba(255, 255, 255, 0.2);
+            z-index: 15;
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        @keyframes traversingNode {
+            0% { 
+                transform: scale(1.1) rotate(-5deg);
+                box-shadow: 
+                    0 0 20px rgba(59, 130, 246, 0.6),
+                    0 0 0 3px rgba(255, 255, 255, 0.2);
+            }
+            100% { 
+                transform: scale(1.3) rotate(5deg);
+                box-shadow: 
+                    0 0 35px rgba(59, 130, 246, 0.9),
+                    0 0 0 6px rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        .tree-node.root {
+            background: var(--gradient-purple);
+            box-shadow: 
+                0 0 30px rgba(168, 85, 247, 0.7),
+                0 0 0 5px rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .tree-node.leaf {
+            background: var(--gradient-cyan);
+            box-shadow: 
+                0 0 20px rgba(6, 182, 212, 0.5),
+                0 0 0 3px rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(6, 182, 212, 0.3);
+        }
+
+        /* Right Side Panel */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .info-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            animation: infoEntrance 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes infoEntrance {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .info-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                var(--primary),
+                var(--secondary),
+                var(--purple),
+                transparent
+            );
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .info-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 1.2rem;
+            text-align: center;
+            transition: var(--transition-elastic);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .info-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .info-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            margin: 0 auto 0.8rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition-bounce);
+        }
+
+        .info-card:hover .info-icon {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .info-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* .node-count {--var(--cyan)); }
+        .tree-height {  var(--primary)); }
+        .operations-count { var(--danger)); }
+        .comparisons-count { background: linear-gradient(45deg, var(--purple), var(--pink)); } */
+
+        .info-label {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Traversal Section */
+        .traversal-section {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            animation: infoEntrance 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .traversal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .traversal-result {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            box-shadow: var(--shadow-sm);
+            animation: resultEntrance 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        @keyframes resultEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .traversal-sequence {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .traversal-node {
+            background: var(--gradient-info);
+            color: white;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition-bounce);
+            animation: slideIn 0.3s ease forwards;
+            opacity: 0;
+            transform: translateY(20px) scale(0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .traversal-node.current {
+            background: var(--gradient-warning);
+            transform: scale(1.2);
+            box-shadow: 
+                0 0 20px rgba(245, 158, 11, 0.6),
+                0 0 0 3px rgba(255, 255, 255, 0.2);
+            animation: currentPulse 0.5s infinite alternate;
+            z-index: 5;
+        }
+
+        @keyframes currentPulse {
+            0% {
+                transform: scale(1.1);
+                box-shadow: 
+                    0 0 15px rgba(245, 158, 11, 0.5),
+                    0 0 0 2px rgba(255, 255, 255, 0.2);
+            }
+            100% {
+                transform: scale(1.3);
+                box-shadow: 
+                    0 0 25px rgba(245, 158, 11, 0.8),
+                    0 0 0 4px rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        /* Queue Visualization */
+        .queue-visualization {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            box-shadow: var(--shadow-md);
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .queue-header {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .queue-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .queue-item {
+            background: var(--gradient-queue);
+            color: white;
+            padding: 0.8rem 1rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            text-align: center;
+            transition: var(--transition-smooth);
+            animation: queueItemEnter 0.3s ease forwards;
+        }
+
+        @keyframes queueItemEnter {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .queue-item.current {
+            background: var(--gradient-warning);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--glass-border);
+            padding: 2rem 2rem 1.5rem;
+            margin-top: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-logo-icon {
+            width: 35px;
+            height: 35px;
+            background: var(--gradient-primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+            animation: pulseGlow 3s infinite alternate;
+        }
+
+        .footer-logo-text h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .footer-description {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .footer-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+        }
+
+        .social-icon {
+            width: 35px;
+            height: 35px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            transition: var(--transition-elastic);
+            text-decoration: none;
+        }
+
+        .social-icon:hover {
+            background: var(--gradient-primary);
+            color: white;
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 1.5rem auto 0;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .copyright {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-bottom-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-bottom-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: var(--shadow-lg);
+            animation: toastEntrance 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+                       toastFloat 3s 0.5s infinite alternate ease-in-out;
+            min-width: 300px;
+            transform-origin: left bottom;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes toastEntrance {
+            0% {
+                opacity: 0;
+                transform: translateX(-100px) scale(0.5) rotate(-10deg);
+            }
+            80% {
+                transform: translateX(10px) scale(1.05) rotate(2deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0) scale(1) rotate(0);
+            }
+        }
+
+        @keyframes toastFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast.warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        .toast.info {
+            border-left: 4px solid var(--info);
+        }
+
+        .toast-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .toast.success .toast-icon {
+            background: var(--gradient-success);
+        }
+
+        .toast.error .toast-icon {
+            background: var(--gradient-danger);
+        }
+
+        .toast.warning .toast-icon {
+            background: var(--gradient-warning);
+        }
+
+        .toast.info .toast-icon {
+            background: var(--gradient-info);
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.3rem;
+        }
+
+        .toast-message {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .toast-close {
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: var(--transition-smooth);
+        }
+
+        .toast-close:hover {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+            transform: rotate(90deg);
+        }
+
+        /* Scroll to Top */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: var(--shadow-xl);
+            transition: var(--transition-elastic);
+            z-index: 1000;
+            animation: scrollTopEntrance 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes scrollTopEntrance {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(-180deg) translateY(50px);
+            }
+            70% {
+                transform: scale(1.2) rotate(10deg) translateY(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0) translateY(0);
+            }
+        }
+
+        .scroll-top.show {
+            display: flex;
+            animation: scrollTopBounce 2s infinite alternate;
+        }
+
+        @keyframes scrollTopBounce {
+            0% {
+                transform: translateY(0) scale(1);
+                box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
+            }
+            100% {
+                transform: translateY(-10px) scale(1.1);
+                box-shadow: 
+                    0 10px 30px rgba(99, 102, 241, 0.6),
+                    0 0 0 3px rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        .scroll-top:hover {
+            transform: scale(1.2) translateY(-5px);
+            box-shadow: 
+                0 15px 40px rgba(99, 102, 241, 0.7),
+                0 0 0 4px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Empty Tree Message */
+        .empty-tree {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            animation: emptyTreeEntrance 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes emptyTreeEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .empty-tree i {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: treeIconFloat 3s infinite alternate ease-in-out;
+        }
+
+        @keyframes treeIconFloat {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-10px) rotate(5deg);
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Enhanced Node Tooltip */
+        .node-tooltip {
+            position: absolute;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            padding: 0.8rem 1rem;
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+            font-size: 0.85rem;
+            color: var(--text);
+            animation: tooltipEntrance 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 150px;
+            pointer-events: none;
+        }
+
+        @keyframes tooltipEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(10px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .right-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tree-node {
+                width: 55px;
+                height: 55px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+                padding: 1rem;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 0.95rem;
+            }
+            
+            .functionality-nav {
+                justify-content: center;
+            }
+            
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+            
+            .tree-node {
+                width: 50px;
+                height: 50px;
+                font-size: 0.95rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .tree-container-wrapper {
+                height: 500px;
+            }
+
+            .right-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 1.6rem;
+            }
+            
+            .func-btn {
+                padding: 10px 16px;
+                font-size: 0.85rem;
+            }
+            
+            .control-btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+            
+            .tree-node {
+                width: 45px;
+                height: 45px;
+                font-size: 0.9rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-value {
+                font-size: 1.6rem;
+            }
+
+            .tree-container-wrapper {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Particle System -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-project-diagram"></i>
+            </div>
+            <div class="logo-text">
+                <h1>Binary Search Tree Visualizer</h1>
+                <span>Interactive Learning Platform</span>
+            </div>
+        </a>
+        <div class="user-info">
+            <div class="user-avatar">
+                <img src="avatar.png" alt="">
+            </div>
+            <div class="user-details">
+                <div class="user-name">Guest User</div>
+                <div class="user-email">guest@example.com</div>
+            </div>
+            <a href="dashboard.php" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+            <button class="logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1 class="hero-title">Binary Search Tree Visualization</h1>
+            <p class="hero-subtitle">Insert, delete, search and traverse nodes with beautiful animations. Watch the BST maintain its properties in real-time.</p>
+        </div>
+
+        <!-- Functionality Navigation -->
+        <div class="functionality-nav" id="functionalityNav">
+            <button class="func-btn active" onclick="showFunctionality('insert')">
+                <i class="fas fa-plus-circle"></i> Insert Node
+            </button>
+            <button class="func-btn" onclick="showFunctionality('delete')">
+                <i class="fas fa-trash"></i> Delete Node
+            </button>
+            <button class="func-btn" onclick="showFunctionality('search')">
+                <i class="fas fa-search"></i> Search Node
+            </button>
+            <button class="func-btn" onclick="showFunctionality('traverse')">
+                <i class="fas fa-shoe-prints"></i> Traverse Tree
+            </button>
+        </div>
+
+        <!-- Controls Section -->
+        <div class="controls-section">
+            <div class="controls-grid" id="controlsGrid">
+                <!-- Controls will be dynamically loaded here -->
+            </div>
+        </div>
+
+        <!-- Main Content Area - Tree and Info Side by Side -->
+        <div class="main-content">
+            <!-- Tree Container -->
+            <div class="tree-container-wrapper">
+                <div class="tree-scroll-controls">
+                    <button class="scroll-btn" onclick="scrollTree('up')">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                    <button class="scroll-btn" onclick="scrollTree('down')">
+                        <i class="fas fa-arrow-down"></i>
+                    </button>
+                    <button class="scroll-btn" onclick="scrollTree('left')">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button class="scroll-btn" onclick="scrollTree('right')">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="scroll-btn" onclick="centerTree()">
+                        <i class="fas fa-crosshairs"></i>
+                    </button>
+                </div>
+                <div class="tree-container" id="treeContainer">
+                    <div class="tree-visualization" id="treeVisualization">
+                        <!-- Tree will be dynamically drawn here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel with Info and Traversal -->
+            <div class="right-panel">
+                <div class="traversal-section">
+                    <div class="traversal-header">
+                        <h3><i class="fas fa-route"></i> Traversal Path</h3>
+                        <button class="control-btn btn-purple" onclick="clearTraversal()" style="padding: 6px 12px; font-size: 0.85rem;">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                    </div>
+                    <div class="traversal-result" id="traversalResult" style="display: none;">
+                        <div class="traversal-sequence" id="traversalSequence">
+                            <!-- Traversal nodes will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Info Panel -->
+                <div class="info-panel">
+                    <h3 style="margin-bottom: 1rem; color: var(--text); display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-chart-bar"></i> Tree Statistics
+                    </h3>
+                    <div class="info-grid" id="infoGrid">
+                        <!-- Info cards will be dynamically loaded here -->
+                    </div>
+                </div>
+
+                <!-- Traversal Section -->
+                
+
+                <!-- Queue Visualization -->
+                <div class="queue-visualization" id="queueVisualization">
+                    <div class="queue-header">
+                        <i class="fas fa-layer-group"></i>
+                        <span>BFS Queue</span>
+                    </div>
+                    <div class="queue-items" id="queueItems">
+                        <!-- Queue items will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <a href="#" class="footer-logo">
+                    <div class="footer-logo-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="footer-logo-text">
+                        <h3>BST Visualizer</h3>
+                    </div>
+                </a>
+                <p class="footer-description">
+                    Interactive platform for learning and visualizing Binary Search Trees with beautiful animations and detailed implementations.
+                </p>
+                <div class="social-links">
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-linkedin"></i>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h4 class="footer-title">BST Operations</h4>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-plus"></i> Insertion</a></li>
+                    <li><a href="#"><i class="fas fa-trash"></i> Deletion</a></li>
+                    <li><a href="#"><i class="fas fa-search"></i> Searching</a></li>
+                    <li><a href="#"><i class="fas fa-shoe-prints"></i> Traversal</a></li>
+                    <li><a href="#"><i class="fas fa-tree"></i> Properties</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4 class="footer-title">Resources</h4>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-book"></i> Documentation</a></li>
+                    <li><a href="#"><i class="fas fa-code"></i> Code Examples</a></li>
+                    <li><a href="#"><i class="fas fa-video"></i> Tutorials</a></li>
+                    <li><a href="#"><i class="fas fa-file-alt"></i> Blog</a></li>
+                    <li><a href="#"><i class="fas fa-question-circle"></i> Help Center</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4 class="footer-title">Contact</h4>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-envelope"></i> support@algorithmviz.com</a></li>
+                    <li><a href="#"><i class="fas fa-phone"></i> +1 (555) 123-4567</a></li>
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> San Francisco, CA</a></li>
+                    <li><a href="#"><i class="fas fa-comment"></i> Live Chat</a></li>
+                    <li><a href="#"><i class="fas fa-bug"></i> Report Issue</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p class="copyright">© 2024 Algorithm Visualizer Pro. All rights reserved.</p>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+                <a href="#">Sitemap</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" onclick="scrollToTop()">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script>
+        // Global State
+        let bst = null;
+        let currentFunctionality = 'insert';
+        let visualizationRunning = false;
+        let speed = 500;
+        let nodePositions = new Map();
+        let metrics = {
+            nodeCount: 0,
+            treeHeight: 0,
+            operations: 0,
+            comparisons: 0,
+            foundValue: null,
+            traversalSteps: 0
+        };
+        let traversalSequence = [];
+        let tooltip = null;
+        let currentAnimation = null;
+        let bfsQueue = [];
+        let isBFSActive = false;
+
+        // Initialize particles
+        function initParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 20}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // BST Node Class
+        class BSTNode {
+            constructor(value) {
+                this.value = value;
+                this.left = null;
+                this.right = null;
+                this.id = `node_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                this.x = 0;
+                this.y = 0;
+                this.level = 0;
+                this.index = 0;
+                this.isRoot = false;
+                this.isLeaf = true;
+            }
+        }
+
+        // BST Class
+        class BinarySearchTree {
+            constructor() {
+                this.root = null;
+                this.nodeCount = 0;
+            }
+
+            insert(value) {
+                const newNode = new BSTNode(value);
+                metrics.nodeCount++;
+                metrics.operations++;
+                
+                if (!this.root) {
+                    this.root = newNode;
+                    newNode.isRoot = true;
+                    newNode.x = 400; // Center in container
+                    newNode.y = 100;
+                    newNode.level = 0;
+                    newNode.index = 0;
+                    return newNode;
+                }
+                
+                return this._insertNode(this.root, newNode);
+            }
+
+            _insertNode(node, newNode) {
+                metrics.comparisons++;
+                
+                if (newNode.value < node.value) {
+                    if (!node.left) {
+                        node.left = newNode;
+                        newNode.level = node.level + 1;
+                        newNode.index = node.index * 2;
+                        node.isLeaf = false;
+                        return newNode;
+                    }
+                    return this._insertNode(node.left, newNode);
+                } else if (newNode.value > node.value) {
+                    if (!node.right) {
+                        node.right = newNode;
+                        newNode.level = node.level + 1;
+                        newNode.index = node.index * 2 + 1;
+                        node.isLeaf = false;
+                        return newNode;
+                    }
+                    return this._insertNode(node.right, newNode);
+                }
+                
+                metrics.nodeCount--;
+                return null;
+            }
+
+            search(value) {
+                metrics.operations++;
+                return this._searchNode(this.root, value);
+            }
+
+            _searchNode(node, value) {
+                if (!node) return null;
+                
+                metrics.comparisons++;
+                
+                if (value === node.value) {
+                    return node;
+                } else if (value < node.value) {
+                    return this._searchNode(node.left, value);
+                } else {
+                    return this._searchNode(node.right, value);
+                }
+            }
+
+            delete(value) {
+                metrics.operations++;
+                this.root = this._deleteNode(this.root, value);
+                this.updateLeafStatus();
+                this.updateMetrics();
+            }
+
+            _deleteNode(node, value) {
+                if (!node) return null;
+                
+                metrics.comparisons++;
+                
+                if (value < node.value) {
+                    node.left = this._deleteNode(node.left, value);
+                } else if (value > node.value) {
+                    node.right = this._deleteNode(node.right, value);
+                } else {
+                    metrics.nodeCount--;
+                    
+                    if (!node.left) {
+                        return node.right;
+                    } else if (!node.right) {
+                        return node.left;
+                    }
+                    
+                    let successor = this._findMin(node.right);
+                    node.value = successor.value;
+                    node.right = this._deleteNode(node.right, successor.value);
+                }
+                
+                return node;
+            }
+
+            updateLeafStatus() {
+                this._updateLeafStatus(this.root);
+            }
+
+            _updateLeafStatus(node) {
+                if (!node) return;
+                node.isLeaf = !node.left && !node.right;
+                this._updateLeafStatus(node.left);
+                this._updateLeafStatus(node.right);
+            }
+
+            _findMin(node) {
+                while (node && node.left) {
+                    node = node.left;
+                }
+                return node;
+            }
+
+            updateMetrics() {
+                metrics.nodeCount = this.getAllNodes().length;
+                metrics.treeHeight = this.getHeight();
+            }
+
+            inorder(node = this.root, result = []) {
+                if (node) {
+                    this.inorder(node.left, result);
+                    result.push(node.value);
+                    this.inorder(node.right, result);
+                }
+                return result;
+            }
+
+            preorder(node = this.root, result = []) {
+                if (node) {
+                    result.push(node.value);
+                    this.preorder(node.left, result);
+                    this.preorder(node.right, result);
+                }
+                return result;
+            }
+
+            postorder(node = this.root, result = []) {
+                if (node) {
+                    this.postorder(node.left, result);
+                    this.postorder(node.right, result);
+                    result.push(node.value);
+                }
+                return result;
+            }
+
+            bfs() {
+                const result = [];
+                if (!this.root) return result;
+                
+                const queue = [this.root];
+                while (queue.length > 0) {
+                    const node = queue.shift();
+                    result.push(node.value);
+                    
+                    if (node.left) queue.push(node.left);
+                    if (node.right) queue.push(node.right);
+                }
+                return result;
+            }
+
+            dfs() {
+                const result = [];
+                if (!this.root) return result;
+                
+                const stack = [this.root];
+                while (stack.length > 0) {
+                    const node = stack.pop();
+                    result.push(node.value);
+                    
+                    if (node.right) stack.push(node.right);
+                    if (node.left) stack.push(node.left);
+                }
+                return result;
+            }
+
+            getHeight(node = this.root) {
+                if (!node) return 0;
+                const leftHeight = this.getHeight(node.left);
+                const rightHeight = this.getHeight(node.right);
+                return Math.max(leftHeight, rightHeight) + 1;
+            }
+
+            getAllNodes() {
+                const nodes = [];
+                this._collectNodes(this.root, nodes);
+                return nodes;
+            }
+
+            _collectNodes(node, array) {
+                if (node) {
+                    array.push(node);
+                    this._collectNodes(node.left, array);
+                    this._collectNodes(node.right, array);
+                }
+            }
+
+            isEmpty() {
+                return this.root === null;
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initParticles();
+            initializeBST();
+            showFunctionality('insert');
+            setupScrollTop();
+            setupEventListeners();
+            setupTreeScroll();
+        });
+
+        function initializeBST() {
+            bst = new BinarySearchTree();
+            
+            const initialValues = [50, 30, 70, 20, 40, 60, 80, 10, 25, 35, 45];
+            
+            initialValues.forEach(value => {
+                const node = bst.insert(value);
+                if (node) {
+                    nodePositions.set(node.id, { x: 0, y: 0 });
+                }
+            });
+            
+            updateTreeVisualization();
+            updateInfoPanel();
+        }
+
+        function showFunctionality(func) {
+            currentFunctionality = func;
+            
+            document.querySelectorAll('.func-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            if (func !== 'traverse') {
+                document.getElementById('traversalResult').style.display = 'none';
+                document.getElementById('queueVisualization').style.display = 'none';
+            }
+            
+            buildControls(func);
+            updateInfoPanel();
+            
+            // Auto-scroll to tree visualization
+            setTimeout(() => {
+                const treeContainer = document.querySelector('.tree-container-wrapper');
+                if (treeContainer) {
+                    treeContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
+
+        function buildControls(func) {
+            const controlsGrid = document.getElementById('controlsGrid');
+            
+            switch(func) {
+                case 'insert':
+                    controlsGrid.innerHTML = `
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-sliders-h"></i> Tree Controls</label>
+                            <div class="control-buttons">
+                                <button class="control-btn btn-primary" onclick="insertNode()" ${visualizationRunning ? 'disabled' : ''}>
+                                    <i class="fas fa-plus"></i> Insert Node
+                                </button>
+                                <button class="control-btn btn-warning" onclick="generateRandomTree()" ${visualizationRunning ? 'disabled' : ''}>
+                                    <i class="fas fa-random"></i> Random Tree
+                                </button>
+                                <button class="control-btn btn-danger" onclick="clearTree()" ${visualizationRunning ? 'disabled' : ''}>
+                                    <i class="fas fa-trash-alt"></i> Clear Tree
+                                </button>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-hashtag"></i> Node Value</label>
+                            <input type="number" class="control-input" id="insertValue" min="1" max="100" value="42">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-tachometer-alt"></i> Animation Speed</label>
+                            <select class="control-select" id="speed" onchange="changeSpeed(this.value)" ${visualizationRunning ? 'disabled' : ''}>
+                                <option value="1000">Slow</option>
+                                <option value="500" selected>Medium</option>
+                                <option value="250">Fast</option>
+                                <option value="100">Very Fast</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-info-circle"></i> Insert Mode</label>
+                            <select class="control-select" id="insertMode" ${visualizationRunning ? 'disabled' : ''}>
+                                <option value="single">Single Insert</option>
+                                <option value="multiple">Multiple Values</option>
+                            </select>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'delete':
+                    controlsGrid.innerHTML = `
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-sliders-h"></i> Tree Controls</label>
+                            <div class="control-buttons">
+                                <button class="control-btn btn-danger" onclick="deleteNode()" ${visualizationRunning ? 'disabled' : ''}>
+                                    <i class="fas fa-trash"></i> Delete Node
+                                </button>
+                                <button class="control-btn btn-warning" onclick="generateRandomTree()" ${visualizationRunning ? 'disabled' : ''}>
+                                    <i class="fas fa-random"></i> Random Tree
+                                </button>
+                                <button class="control-btn btn-info" onclick="findMinMax()" ${visualizationRunning ? 'disabled' : ''}>
+                                    <i class="fas fa-search"></i> Find Min/Max
+                                </button>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-hashtag"></i> Node Value to Delete</label>
+                            <input type="number" class="control-input" id="deleteValue" min="1" max="100" value="30">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-tachometer-alt"></i> Animation Speed</label>
+                            <select class="control-select" id="speed" onchange="changeSpeed(this.value)" ${visualizationRunning ? 'disabled' : ''}>
+                                <option value="1000">Slow</option>
+                                <option value="500" selected>Medium</option>
+                                <option value="250">Fast</option>
+                                <option value="100">Very Fast</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-bullseye"></i> Delete Type</label>
+                            <select class="control-select" id="deleteType" ${visualizationRunning ? 'disabled' : ''}>
+                                <option value="specific">Specific Value</option>
+                                <option value="min">Minimum Value</option>
+                                <option value="max">Maximum Value</option>
+                                <option value="leaf">Random Leaf</option>
+                            </select>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'search':
+                    controlsGrid.innerHTML = `
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-sliders-h"></i> Search Controls</label>
+                            <div class="control-buttons">
+                                <button class="control-btn btn-info" onclick="searchNode()" ${visualizationRunning ? 'disabled' : ''}>
+                                    <i class="fas fa-search"></i> Search Node
+                                </button>
+                                <button class="control-btn btn-warning" onclick="generateRandomTree()" ${visualizationRunning ? 'disabled' : ''}>
+                                    <i class="fas fa-random"></i> Random Tree
+                                </button>
+                                <button class="control-btn btn-purple" onclick="highlightPath()" ${visualizationRunning ? 'disabled' : ''}>
+                                    <i class="fas fa-route"></i> Show Search Path
+                                </button>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-hashtag"></i> Value to Search</label>
+                            <input type="number" class="control-input" id="searchValue" min="1" max="100" value="40">
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-tachometer-alt"></i> Animation Speed</label>
+                            <select class="control-select" id="speed" onchange="changeSpeed(this.value)" ${visualizationRunning ? 'disabled' : ''}>
+                                <option value="1000">Slow</option>
+                                <option value="500" selected>Medium</option>
+                                <option value="250">Fast</option>
+                                <option value="100">Very Fast</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-search"></i> Search Type</label>
+                            <select class="control-select" id="searchType" ${visualizationRunning ? 'disabled' : ''}>
+                                <option value="binary">Binary Search</option>
+                                <option value="bfs">Breadth First</option>
+                                <option value="dfs">Depth First</option>
+                            </select>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'traverse':
+                    controlsGrid.innerHTML = `
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-sliders-h"></i> Traversal Controls</label>
+                            <div class="control-buttons">
+                                <button class="control-btn btn-purple" onclick="traverseInorder()" ${visualizationRunning ? 'disabled' : ''}>
+                                    <i class="fas fa-shoe-prints"></i> In-order
+                                </button>
+                                <button class="control-btn btn-info" onclick="traversePreorder()" ${visualizationRunning ? 'disabled' : ''}>
+                                    <i class="fas fa-shoe-prints"></i> Pre-order
+                                </button>
+                                <button class="control-btn btn-success" onclick="traversePostorder()" ${visualizationRunning ? 'disabled' : ''}>
+                                    <i class="fas fa-shoe-prints"></i> Post-order
+                                </button>
+                                <button class="control-btn btn-warning" onclick="traverseBFS()" ${visualizationRunning ? 'disabled' : ''}>
+                                    <i class="fas fa-layer-group"></i> BFS
+                                </button>
+                                <button class="control-btn btn-danger" onclick="traverseDFS()" ${visualizationRunning ? 'disabled' : ''}>
+                                    <i class="fas fa-deep-level"></i> DFS
+                                </button>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-tachometer-alt"></i> Animation Speed</label>
+                            <select class="control-select" id="speed" onchange="changeSpeed(this.value)" ${visualizationRunning ? 'disabled' : ''}>
+                                <option value="800">Slow</option>
+                                <option value="400" selected>Medium</option>
+                                <option value="200">Fast</option>
+                                <option value="100">Very Fast</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-route"></i> Traversal Speed</label>
+                            <select class="control-select" id="traversalSpeed" ${visualizationRunning ? 'disabled' : ''}>
+                                <option value="step">Step by Step</option>
+                                <option value="continuous" selected>Continuous</option>
+                                <option value="fast">Fast Animation</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label"><i class="fas fa-eye"></i> Visualization</label>
+                            <select class="control-select" id="traversalViz" ${visualizationRunning ? 'disabled' : ''}>
+                                <option value="highlight">Highlight Nodes</option>
+                                <option value="path" selected>Show Path</option>
+                                <option value="both">Both</option>
+                            </select>
+                        </div>
+                    `;
+                    break;
+            }
+        }
+
+        function updateTreeVisualization() {
+            const treeContainer = document.getElementById('treeVisualization');
+            treeContainer.innerHTML = '';
+            
+            if (bst.isEmpty()) {
+                treeContainer.innerHTML = `
+                    <div class="empty-tree">
+                        <i class="fas fa-tree"></i>
+                        <h3>Empty Tree</h3>
+                        <p>Insert nodes to start visualization</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            calculateNodePositions();
+            drawEdges();
+            drawNodes();
+            
+            updateInfoPanel();
+            
+            // Auto-center the tree after update
+            setTimeout(centerTree, 100);
+        }
+
+        function calculateNodePositions() {
+            const nodes = bst.getAllNodes();
+            const containerWidth = 800; // Fixed container width
+            const levelHeight = 80;
+            const maxLevel = Math.max(...nodes.map(n => n.level));
+            
+            // Calculate positions based on tree structure
+            nodes.forEach(node => {
+                // Calculate horizontal position based on index
+                const maxNodesAtLevel = Math.pow(2, node.level);
+                const spacing = containerWidth / (maxNodesAtLevel + 1);
+                
+                // Adjust index for better distribution
+                const adjustedIndex = node.index - (Math.pow(2, node.level) - 1) / 2;
+                
+                node.x = (containerWidth / 2) + (adjustedIndex * spacing);
+                node.y = 80 + (node.level * levelHeight);
+                
+                // Ensure node stays within container bounds
+                node.x = Math.max(60, Math.min(node.x, containerWidth - 60));
+                
+                nodePositions.set(node.id, { x: node.x, y: node.y });
+            });
+        }
+
+        function drawNodes() {
+            const nodes = bst.getAllNodes();
+            const treeContainer = document.getElementById('treeVisualization');
+            
+            nodes.forEach(node => {
+                const nodeElement = document.createElement('div');
+                nodeElement.className = 'tree-node';
+                nodeElement.id = node.id;
+                nodeElement.style.left = `${node.x - 30}px`;
+                nodeElement.style.top = `${node.y - 30}px`;
+                
+                if (node === bst.root) {
+                    nodeElement.classList.add('root');
+                }
+                if (node.isLeaf) {
+                    nodeElement.classList.add('leaf');
+                }
+                
+                nodeElement.innerHTML = `
+                    <div class="tree-node-value">${node.value}</div>
+                    <div class="tree-node-index">${node.level}-${node.index}</div>
+                `;
+                
+                nodeElement.onmouseenter = (e) => showNodeTooltip(e, node);
+                nodeElement.onmouseleave = hideNodeTooltip;
+                nodeElement.onclick = () => showNodeInfo(node);
+                
+                treeContainer.appendChild(nodeElement);
+            });
+        }
+
+        function drawEdges() {
+            const nodes = bst.getAllNodes();
+            const treeContainer = document.getElementById('treeVisualization');
+            
+            nodes.forEach(node => {
+                if (node.left && nodePositions.has(node.left.id)) {
+                    const parentPos = nodePositions.get(node.id);
+                    const childPos = nodePositions.get(node.left.id);
+                    
+                    if (parentPos && childPos) {
+                        const edge = createEdge(parentPos, childPos);
+                        treeContainer.appendChild(edge);
+                    }
+                }
+                
+                if (node.right && nodePositions.has(node.right.id)) {
+                    const parentPos = nodePositions.get(node.id);
+                    const childPos = nodePositions.get(node.right.id);
+                    
+                    if (parentPos && childPos) {
+                        const edge = createEdge(parentPos, childPos);
+                        treeContainer.appendChild(edge);
+                    }
+                }
+            });
+        }
+
+        function createEdge(parentPos, childPos) {
+            const dx = childPos.x - parentPos.x;
+            const dy = childPos.y - parentPos.y;
+            const length = Math.sqrt(dx * dx + dy * dy);
+            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+            
+            const edge = document.createElement('div');
+            edge.className = 'tree-edge';
+            edge.style.width = `${length}px`;
+            edge.style.left = `${parentPos.x}px`;
+            edge.style.top = `${parentPos.y}px`;
+            edge.style.transform = `rotate(${angle}deg)`;
+            
+            return edge;
+        }
+
+        function showNodeTooltip(e, node) {
+            if (tooltip) tooltip.remove();
+            
+            tooltip = document.createElement('div');
+            tooltip.className = 'node-tooltip';
+            tooltip.innerHTML = `
+                <div><strong>Value:</strong> ${node.value}</div>
+                <div><strong>Level:</strong> ${node.level}</div>
+                <div><strong>Position:</strong> ${node.index}</div>
+                <div><strong>Type:</strong> ${node.isRoot ? 'Root' : node.isLeaf ? 'Leaf' : 'Internal'}</div>
+                <div><strong>Left:</strong> ${node.left ? node.left.value : 'None'}</div>
+                <div><strong>Right:</strong> ${node.right ? node.right.value : 'None'}</div>
+            `;
+            
+            document.body.appendChild(tooltip);
+            
+            const rect = e.target.getBoundingClientRect();
+            tooltip.style.left = `${rect.right + 10}px`;
+            tooltip.style.top = `${rect.top}px`;
+        }
+
+        function hideNodeTooltip() {
+            if (tooltip) {
+                tooltip.remove();
+                tooltip = null;
+            }
+        }
+
+        function showNodeInfo(node) {
+            const info = `
+                Node Value: ${node.value}
+                Level: ${node.level}
+                Position: ${node.index}
+                Type: ${node.isRoot ? 'Root' : node.isLeaf ? 'Leaf' : 'Internal'}
+                Left Child: ${node.left ? node.left.value : 'None'}
+                Right Child: ${node.right ? node.right.value : 'None'}
+                Is Root: ${node.isRoot ? 'Yes' : 'No'}
+                Is Leaf: ${node.isLeaf ? 'Yes' : 'No'}
+            `;
+            showToast(info, 'info');
+        }
+
+        async function insertNode() {
+            if (visualizationRunning) return;
+            visualizationRunning = true;
+            
+            const value = parseInt(document.getElementById('insertValue').value);
+            if (isNaN(value) || value < 1 || value > 100) {
+                showToast('Please enter a valid number between 1 and 100', 'error');
+                visualizationRunning = false;
+                return;
+            }
+            
+            // Auto-scroll to tree before starting
+            await scrollToTreeView();
+            
+            const insertedNode = bst.insert(value);
+            
+            if (insertedNode) {
+                updateTreeVisualization();
+                
+                const nodeElement = document.getElementById(insertedNode.id);
+                if (nodeElement) {
+                    nodeElement.classList.add('inserting');
+                    // Ensure the inserted node is visible
+                    await scrollToNode(insertedNode.id);
+                    await sleep(1000);
+                    nodeElement.classList.remove('inserting');
+                }
+                
+                showToast(`Node ${value} inserted successfully!`, 'success');
+            } else {
+                showToast(`Node ${value} already exists in the tree!`, 'warning');
+            }
+            
+            updateInfoPanel();
+            visualizationRunning = false;
+        }
+
+        async function deleteNode() {
+            if (visualizationRunning) return;
+            visualizationRunning = true;
+            
+            const deleteType = document.getElementById('deleteType').value;
+            let value;
+            
+            if (deleteType === 'specific') {
+                value = parseInt(document.getElementById('deleteValue').value);
+                if (isNaN(value) || value < 1 || value > 100) {
+                    showToast('Please enter a valid number between 1 and 100', 'error');
+                    visualizationRunning = false;
+                    return;
+                }
+            } else if (deleteType === 'min') {
+                value = findMinimumValue();
+            } else if (deleteType === 'max') {
+                value = findMaximumValue();
+            } else if (deleteType === 'leaf') {
+                value = findRandomLeafValue();
+            }
+            
+            const nodeToDelete = bst.search(value);
+            if (!nodeToDelete) {
+                showToast(`Node ${value} not found in the tree!`, 'error');
+                visualizationRunning = false;
+                return;
+            }
+            
+            // Ensure the node is visible before deletion
+            await scrollToTreeView();
+            
+            const nodeElement = document.getElementById(nodeToDelete.id);
+            if (nodeElement) {
+                nodeElement.classList.add('deleting');
+                await sleep(1000);
+            }
+            
+            bst.delete(value);
+            updateTreeVisualization();
+            
+            showToast(`Node ${value} deleted successfully!`, 'warning');
+            updateInfoPanel();
+            visualizationRunning = false;
+        }
+
+        function findMinimumValue() {
+            let currentNode = bst.root;
+            while (currentNode && currentNode.left) {
+                currentNode = currentNode.left;
+            }
+            return currentNode ? currentNode.value : null;
+        }
+
+        function findMaximumValue() {
+            let currentNode = bst.root;
+            while (currentNode && currentNode.right) {
+                currentNode = currentNode.right;
+            }
+            return currentNode ? currentNode.value : null;
+        }
+
+        function findRandomLeafValue() {
+            const leaves = bst.getAllNodes().filter(node => node.isLeaf);
+            if (leaves.length === 0) return null;
+            const randomLeaf = leaves[Math.floor(Math.random() * leaves.length)];
+            return randomLeaf.value;
+        }
+
+        async function searchNode() {
+            if (visualizationRunning) return;
+            visualizationRunning = true;
+            
+            const value = parseInt(document.getElementById('searchValue').value);
+            const searchType = document.getElementById('searchType').value;
+            
+            if (isNaN(value) || value < 1 || value > 100) {
+                showToast('Please enter a valid number between 1 and 100', 'error');
+                visualizationRunning = false;
+                return;
+            }
+            
+            await scrollToTreeView();
+            
+            clearHighlights();
+            
+            if (searchType === 'binary') {
+                await animateBinarySearch(value);
+            } else if (searchType === 'bfs') {
+                await animateBFSSearch(value);
+            } else if (searchType === 'dfs') {
+                await animateDFSSearch(value);
+            }
+            
+            visualizationRunning = false;
+        }
+
+        async function animateBinarySearch(value) {
+            let currentNode = bst.root;
+            const visitedNodes = [];
+            
+            while (currentNode) {
+                visitedNodes.push(currentNode.id);
+                await highlightNode(currentNode.id, 'traversing');
+                
+                metrics.comparisons++;
+                updateInfoPanel();
+                
+                if (value === currentNode.value) {
+                    await highlightNode(currentNode.id, 'found');
+                    showToast(`Node ${value} found!`, 'success');
+                    metrics.foundValue = value;
+                    updateInfoPanel();
+                    return;
+                } else if (value < currentNode.value) {
+                    currentNode = currentNode.left;
+                } else {
+                    currentNode = currentNode.right;
+                }
+                
+                await sleep(speed);
+            }
+            
+            showToast(`Node ${value} not found!`, 'error');
+            metrics.foundValue = null;
+            updateInfoPanel();
+            
+            setTimeout(() => {
+                visitedNodes.forEach(nodeId => {
+                    const nodeElement = document.getElementById(nodeId);
+                    if (nodeElement) {
+                        nodeElement.classList.remove('traversing');
+                    }
+                });
+            }, 1000);
+        }
+
+        async function animateBFSSearch(value) {
+            if (!bst.root) {
+                showToast('Tree is empty!', 'error');
+                return;
+            }
+            
+            const queue = [bst.root];
+            const visited = new Set();
+            
+            // Show queue visualization
+            document.getElementById('queueVisualization').style.display = 'block';
+            
+            while (queue.length > 0) {
+                const currentNode = queue.shift();
+                
+                // Update queue display
+                updateQueueDisplay(queue);
+                
+                // Highlight current node
+                await highlightNode(currentNode.id, 'traversing');
+                visited.add(currentNode.id);
+                
+                metrics.comparisons++;
+                updateInfoPanel();
+                
+                if (currentNode.value === value) {
+                    await highlightNode(currentNode.id, 'found');
+                    showToast(`Node ${value} found using BFS!`, 'success');
+                    metrics.foundValue = value;
+                    
+                    // Clear queue display
+                    clearQueueDisplay();
+                    document.getElementById('queueVisualization').style.display = 'none';
+                    
+                    return;
+                }
+                
+                // Add children to queue
+                if (currentNode.left) queue.push(currentNode.left);
+                if (currentNode.right) queue.push(currentNode.right);
+                
+                await sleep(speed);
+            }
+            
+            showToast(`Node ${value} not found!`, 'error');
+            metrics.foundValue = null;
+            clearQueueDisplay();
+            document.getElementById('queueVisualization').style.display = 'none';
+        }
+
+        async function animateDFSSearch(value) {
+            if (!bst.root) {
+                showToast('Tree is empty!', 'error');
+                return;
+            }
+            
+            const stack = [bst.root];
+            const visited = new Set();
+            
+            while (stack.length > 0) {
+                const currentNode = stack.pop();
+                
+                // Highlight current node
+                await highlightNode(currentNode.id, 'traversing');
+                visited.add(currentNode.id);
+                
+                metrics.comparisons++;
+                updateInfoPanel();
+                
+                if (currentNode.value === value) {
+                    await highlightNode(currentNode.id, 'found');
+                    showToast(`Node ${value} found using DFS!`, 'success');
+                    metrics.foundValue = value;
+                    return;
+                }
+                
+                // Add children to stack (right first for pre-order traversal)
+                if (currentNode.right) stack.push(currentNode.right);
+                if (currentNode.left) stack.push(currentNode.left);
+                
+                await sleep(speed);
+            }
+            
+            showToast(`Node ${value} not found!`, 'error');
+            metrics.foundValue = null;
+        }
+
+        async function traverseInorder() {
+            await startTraversal('inorder');
+        }
+
+        async function traversePreorder() {
+            await startTraversal('preorder');
+        }
+
+        async function traversePostorder() {
+            await startTraversal('postorder');
+        }
+
+        async function traverseBFS() {
+            await startTraversal('bfs');
+        }
+
+        async function traverseDFS() {
+            await startTraversal('dfs');
+        }
+
+        async function startTraversal(type) {
+            if (visualizationRunning) return;
+            visualizationRunning = true;
+            
+            // Auto-scroll to tree view
+            await scrollToTreeView();
+            
+            // Clear previous traversal
+            clearTraversal();
+            
+            // Show traversal result container
+            document.getElementById('traversalResult').style.display = 'block';
+            
+            // Show queue for BFS
+            if (type === 'bfs') {
+                document.getElementById('queueVisualization').style.display = 'block';
+            }
+            
+            // Get traversal values
+            let values = [];
+            switch(type) {
+                case 'inorder':
+                    values = bst.inorder();
+                    break;
+                case 'preorder':
+                    values = bst.preorder();
+                    break;
+                case 'postorder':
+                    values = bst.postorder();
+                    break;
+                case 'bfs':
+                    values = bst.bfs();
+                    break;
+                case 'dfs':
+                    values = bst.dfs();
+                    break;
+            }
+            
+            traversalSequence = values;
+            
+            clearHighlights();
+            
+            // Start animation based on traversal type
+            if (type === 'bfs') {
+                await animateBFSTraversal();
+            } else if (type === 'dfs') {
+                await animateDFSTraversal();
+            } else {
+                await animateRecursiveTraversal(bst.root, type);
+            }
+            
+            showToast(`${type.toUpperCase()} traversal completed!`, 'success');
+            visualizationRunning = false;
+            
+            // Hide queue after BFS
+            if (type === 'bfs') {
+                setTimeout(() => {
+                    document.getElementById('queueVisualization').style.display = 'none';
+                }, 2000);
+            }
+        }
+
+        async function animateRecursiveTraversal(node, type) {
+            if (!node) return;
+            
+            if (type === 'preorder') {
+                await visitNode(node);
+                await animateRecursiveTraversal(node.left, type);
+                await animateRecursiveTraversal(node.right, type);
+            } else if (type === 'inorder') {
+                await animateRecursiveTraversal(node.left, type);
+                await visitNode(node);
+                await animateRecursiveTraversal(node.right, type);
+            } else if (type === 'postorder') {
+                await animateRecursiveTraversal(node.left, type);
+                await animateRecursiveTraversal(node.right, type);
+                await visitNode(node);
+            }
+        }
+
+        async function animateBFSTraversal() {
+            if (!bst.root) return;
+            
+            const queue = [bst.root];
+            
+            while (queue.length > 0) {
+                const currentNode = queue.shift();
+                
+                // Update queue display
+                updateQueueDisplay(queue);
+                
+                // Visit current node
+                await visitNode(currentNode);
+                
+                // Add children to queue
+                if (currentNode.left) queue.push(currentNode.left);
+                if (currentNode.right) queue.push(currentNode.right);
+                
+                await sleep(speed);
+            }
+            
+            clearQueueDisplay();
+        }
+
+        async function animateDFSTraversal() {
+            if (!bst.root) return;
+            
+            const stack = [bst.root];
+            
+            while (stack.length > 0) {
+                const currentNode = stack.pop();
+                
+                // Visit current node
+                await visitNode(currentNode);
+                
+                // Add children to stack (right first for pre-order traversal)
+                if (currentNode.right) stack.push(currentNode.right);
+                if (currentNode.left) stack.push(currentNode.left);
+                
+                await sleep(speed);
+            }
+        }
+
+        async function visitNode(node) {
+            // Highlight the node
+            await highlightNode(node.id, 'traversing');
+            
+            // Add to traversal sequence display
+            addToTraversalSequence(node.value);
+            
+            metrics.traversalSteps++;
+            updateInfoPanel();
+            
+            const traversalSpeed = document.getElementById('traversalSpeed').value;
+            const waitTime = traversalSpeed === 'fast' ? 200 : traversalSpeed === 'step' ? 1000 : 400;
+            await sleep(waitTime);
+            
+            // Remove highlighting
+            const nodeVizElement = document.getElementById(node.id);
+            if (nodeVizElement) {
+                nodeVizElement.classList.remove('traversing');
+            }
+        }
+
+        function addToTraversalSequence(value) {
+            const traversalSequenceDiv = document.getElementById('traversalSequence');
+            const nodeElement = document.createElement('div');
+            nodeElement.className = 'traversal-node current';
+            nodeElement.textContent = value;
+            nodeElement.style.animationDelay = `${metrics.traversalSteps * 0.1}s`;
+            traversalSequenceDiv.appendChild(nodeElement);
+            
+            // Scroll the traversal sequence to show the new node
+            nodeElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            
+            // Remove current class after animation
+            setTimeout(() => {
+                nodeElement.classList.remove('current');
+            }, 500);
+        }
+
+        function updateQueueDisplay(queue) {
+            const queueItemsDiv = document.getElementById('queueItems');
+            queueItemsDiv.innerHTML = '';
+            
+            bfsQueue = [...queue];
+            
+            bfsQueue.forEach((node, index) => {
+                const queueItem = document.createElement('div');
+                queueItem.className = 'queue-item';
+                if (index === 0) queueItem.classList.add('current');
+                queueItem.textContent = node.value;
+                queueItem.style.animationDelay = `${index * 0.1}s`;
+                queueItemsDiv.appendChild(queueItem);
+            });
+        }
+
+        function clearQueueDisplay() {
+            const queueItemsDiv = document.getElementById('queueItems');
+            queueItemsDiv.innerHTML = '';
+            bfsQueue = [];
+        }
+
+        function generateRandomTree() {
+            if (visualizationRunning) return;
+            
+            bst = new BinarySearchTree();
+            nodePositions.clear();
+            
+            const nodeCount = Math.floor(Math.random() * 10) + 5;
+            const values = new Set();
+            
+            while (values.size < nodeCount) {
+                values.add(Math.floor(Math.random() * 90) + 10);
+            }
+            
+            Array.from(values).forEach(value => {
+                bst.insert(value);
+            });
+            
+            updateTreeVisualization();
+            showToast(`Generated random tree with ${nodeCount} nodes`, 'success');
+        }
+
+        function clearTree() {
+            if (visualizationRunning) return;
+            
+            bst = new BinarySearchTree();
+            nodePositions.clear();
+            updateTreeVisualization();
+            clearTraversal();
+            showToast('Tree cleared!', 'warning');
+        }
+
+        function clearTraversal() {
+            traversalSequence = [];
+            metrics.traversalSteps = 0;
+            document.getElementById('traversalSequence').innerHTML = '';
+            document.getElementById('traversalResult').style.display = 'none';
+            clearQueueDisplay();
+            document.getElementById('queueVisualization').style.display = 'none';
+            updateInfoPanel();
+        }
+
+        function findMinMax() {
+            const min = findMinimumValue();
+            const max = findMaximumValue();
+            
+            if (min && max) {
+                showToast(`Minimum: ${min}, Maximum: ${max}`, 'info');
+            } else {
+                showToast('Tree is empty!', 'error');
+            }
+        }
+
+        function highlightPath() {
+            if (visualizationRunning) return;
+            
+            const value = parseInt(document.getElementById('searchValue').value);
+            if (isNaN(value)) return;
+            
+            let currentNode = bst.root;
+            const path = [];
+            
+            while (currentNode) {
+                path.push(currentNode.id);
+                
+                if (value === currentNode.value) {
+                    break;
+                } else if (value < currentNode.value) {
+                    currentNode = currentNode.left;
+                } else {
+                    currentNode = currentNode.right;
+                }
+            }
+            
+            path.forEach((nodeId, index) => {
+                setTimeout(() => {
+                    const nodeElement = document.getElementById(nodeId);
+                    if (nodeElement) {
+                        nodeElement.classList.add('highlight');
+                    }
+                }, index * 300);
+            });
+            
+            setTimeout(() => {
+                path.forEach(nodeId => {
+                    const nodeElement = document.getElementById(nodeId);
+                    if (nodeElement) {
+                        nodeElement.classList.remove('highlight');
+                    }
+                });
+            }, path.length * 300 + 1000);
+        }
+
+        function updateInfoPanel() {
+            const infoGrid = document.getElementById('infoGrid');
+            
+            // Update metrics
+            metrics.nodeCount = bst.getAllNodes().length;
+            metrics.treeHeight = bst.getHeight();
+            
+            infoGrid.innerHTML = `
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-circle-nodes"></i>
+                    </div>
+                    <div class="info-value node-count">${metrics.nodeCount}</div>
+                    <div class="info-label">Total Nodes</div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-ruler-vertical"></i>
+                    </div>
+                    <div class="info-value tree-height">${metrics.treeHeight}</div>
+                    <div class="info-label">Tree Height</div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="info-value operations-count">${metrics.operations}</div>
+                    <div class="info-label">Operations</div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <i class="fas fa-code-compare"></i>
+                    </div>
+                    <div class="info-value comparisons-count">${metrics.comparisons}</div>
+                    <div class="info-label">Comparisons</div>
+                </div>
+            `;
+            
+            if (metrics.foundValue !== null) {
+                infoGrid.innerHTML += `
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div class="info-value found-value">${metrics.foundValue}</div>
+                        <div class="info-label">Found Value</div>
+                    </div>
+                `;
+            }
+            
+            if (metrics.traversalSteps > 0) {
+                infoGrid.innerHTML += `
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-shoe-prints"></i>
+                        </div>
+                        <div class="info-value traversal-index">${metrics.traversalSteps}</div>
+                        <div class="info-label">Traversal Steps</div>
+                    </div>
+                `;
+            }
+        }
+
+        async function highlightNode(nodeId, className) {
+            const nodeElement = document.getElementById(nodeId);
+            if (nodeElement) {
+                nodeElement.classList.add(className);
+                await sleep(speed / 2);
+            }
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.tree-node').forEach(node => {
+                node.classList.remove('traversing', 'found', 'highlight', 'inserting', 'deleting');
+            });
+            
+            document.querySelectorAll('.tree-edge').forEach(edge => {
+                edge.classList.remove('highlight', 'traversing');
+            });
+        }
+
+        function changeSpeed(newSpeed) {
+            speed = parseInt(newSpeed);
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Tree Scrolling and Navigation Functions
+        function setupTreeScroll() {
+            const treeContainer = document.getElementById('treeContainer');
+            treeContainer.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                if (e.deltaY > 0) {
+                    treeContainer.scrollLeft += 50;
+                } else {
+                    treeContainer.scrollLeft -= 50;
+                }
+            });
+        }
+
+        function scrollTree(direction) {
+            const treeContainer = document.getElementById('treeContainer');
+            const scrollAmount = 100;
+            
+            switch(direction) {
+                case 'up':
+                    treeContainer.scrollTop -= scrollAmount;
+                    break;
+                case 'down':
+                    treeContainer.scrollTop += scrollAmount;
+                    break;
+                case 'left':
+                    treeContainer.scrollLeft -= scrollAmount;
+                    break;
+                case 'right':
+                    treeContainer.scrollLeft += scrollAmount;
+                    break;
+            }
+        }
+
+        function centerTree() {
+            const treeContainer = document.getElementById('treeContainer');
+            const treeVisualization = document.getElementById('treeVisualization');
+            
+            if (bst.root && nodePositions.has(bst.root.id)) {
+                const rootPos = nodePositions.get(bst.root.id);
+                if (rootPos) {
+                    // Center on root node
+                    treeContainer.scrollLeft = rootPos.x - (treeContainer.clientWidth / 2);
+                    treeContainer.scrollTop = rootPos.y - (treeContainer.clientHeight / 2);
+                }
+            }
+        }
+
+        async function scrollToTreeView() {
+            const treeContainerWrapper = document.querySelector('.tree-container-wrapper');
+            if (treeContainerWrapper) {
+                treeContainerWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                await sleep(300);
+            }
+        }
+
+        async function scrollToNode(nodeId) {
+            const treeContainer = document.getElementById('treeContainer');
+            const nodeElement = document.getElementById(nodeId);
+            
+            if (nodeElement) {
+                const rect = nodeElement.getBoundingClientRect();
+                const containerRect = treeContainer.getBoundingClientRect();
+                
+                // Calculate scroll position to center the node
+                const targetScrollLeft = treeContainer.scrollLeft + (rect.left - containerRect.left) - (containerRect.width / 2) + (rect.width / 2);
+                const targetScrollTop = treeContainer.scrollTop + (rect.top - containerRect.top) - (containerRect.height / 2) + (rect.height / 2);
+                
+                // Smooth scroll to the node
+                treeContainer.scrollTo({
+                    left: targetScrollLeft,
+                    top: targetScrollTop,
+                    behavior: 'smooth'
+                });
+                
+                // Wait a bit for scrolling to complete
+                await sleep(300);
+            }
+        }
+
+        // UI Functions
+        function setupScrollTop() {
+            const scrollTopBtn = document.querySelector('.scroll-top');
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    scrollTopBtn.classList.add('show');
+                } else {
+                    scrollTopBtn.classList.remove('show');
+                }
+            });
+        }
+
+        function setupEventListeners() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && visualizationRunning) {
+                    visualizationRunning = false;
+                    showToast('Visualization stopped', 'warning');
+                }
+            });
+            
+            // Hide tooltip on click
+            document.addEventListener('click', hideNodeTooltip);
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function logout() {
+            window.location.href = 'logout.php';
+        }
+
+        // Toast System
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                warning: 'fa-exclamation-triangle',
+                info: 'fa-info-circle'
+            };
+            
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="fas ${icons[type]}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(-30px) scale(0.9)';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
